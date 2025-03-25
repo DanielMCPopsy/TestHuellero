@@ -1,0 +1,10 @@
+.wide-modal {
+  max-width: 800px !important; /* Ajusta el ancho del modal */
+}
+
+/* Organizar el formulario en dos columnas */
+.custom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}

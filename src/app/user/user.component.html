@@ -1,0 +1,48 @@
+<div class="container mt-4">
+  <h2 class="text-center">Lista de Usuarios</h2>
+  
+  <button class="btn btn-success mb-3" (click)="openCreateUserModal()">Crear Usuario</button>
+
+  <table class="table table-bordered table-striped mt-3">
+    <thead class="table-dark">
+      <tr>
+        <th>Nombre</th>
+        <th>Cédula</th>
+        <th>Correo</th>
+        <th>Cargo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of paginatedUsers">
+        <td>{{ user.nombres }} {{ user.apellidos }}</td>
+        <td>{{ user.cedula }}</td>
+        <td>{{ user.correo }}</td>
+        <td>{{ user.cargo }}</td>
+        <td>
+          <button class="btn btn-primary btn-sm" (click)="editUser(user)">
+            Añadir huella
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="d-flex justify-content-between">
+    <button
+      class="btn btn-secondary"
+      (click)="prevPage()"
+      [disabled]="currentPage === 1"
+    >
+      Anterior
+    </button>
+    <span class="align-self-center">Página {{ currentPage }}</span>
+    <button
+      class="btn btn-secondary"
+      (click)="nextPage()"
+      [disabled]="currentPage * itemsPerPage >= users.length"
+    >
+      Siguiente
+    </button>
+  </div>
+</div>

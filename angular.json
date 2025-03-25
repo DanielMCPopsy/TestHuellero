@@ -27,9 +27,14 @@
               }
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "./src/app/core/modules/WebSDK/index.js",
+              "./node_modules/@digitalpersona/devices/dist/es6.bundles/index.umd.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+            ]
           },
           "configurations": {
             "production": {
