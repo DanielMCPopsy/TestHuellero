@@ -5252,8 +5252,7 @@
 
       window.WebSdkCore.utils = factory(window.WebSdkCore);
     }
-});
-;(function (core) {
+})(function (core) {
 
     function getQueryParam(url, name) {
         var match = RegExp('[?&]' + name + '=([^&]*)').exec(url);
@@ -5402,9 +5401,7 @@
 
         window.WebSdkCore.configurator = factory(window.WebSdkCore, window.WebSdkCore.utils);
     }
-});
-
-;(function (core, utils) {
+})(function (core, utils) {
 
     /**
     * Loads configuration parameters from configuration server and saves it in session storage.
@@ -5903,8 +5900,7 @@
 
         window.WebSdkCore.channelClientImplementation = factory(async, sjcl, BigInteger, SRPClient, core, core.utils, core.configurator, core.cipher);
     }
-});
-;(function (async, sjcl, BigInteger, SRPClient, core, utils, configurator, cipher) {
+})(function (async, sjcl, BigInteger, SRPClient, core, utils, configurator, cipher) {
 
 
     function WebChannelClientImpl(clientPath) {
@@ -6301,9 +6297,7 @@
 
 		window.WebSdkCore.channelClient = factory(core, core.channelOptions, core.channelClientImplementation);
     }
-});
-
-;(function (core, WebChannelOptions, WebChannelClientImpl) {
+})(function (core, WebChannelOptions, WebChannelClientImpl) {
 
     function WebChannelClient(clientPath, options) {
         if (options) {
@@ -6389,9 +6383,7 @@
 
         window.WebSdk = factory(core, core.channelOptions, core.channelClient, ifvisible);
     }
-});
-
-;(function (core, WebChannelOptions, WebChannelClient, ifvisible) {
+})(function (core, WebChannelOptions, WebChannelClient, ifvisible) {
     core.log('loaded websdk.client.ui');
 
     core.visibilityApi = ifvisible;

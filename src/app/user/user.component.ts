@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { HuellasService } from '../services/huellas.service';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
-// import {
-//   FingerprintReader,
-//   SampleFormat,
-//   SamplesAcquired,
-// } from '@digitalpersona/devices';
+import {
+  FingerprintReader,
+  SampleFormat,
+  SamplesAcquired,
+} from '@digitalpersona/devices';
 
 @Component({
   selector: 'app-user',
@@ -15,7 +15,7 @@ import Swal from 'sweetalert2';
   styleUrl: './user.component.css',
 })
 export class UserComponent {
-  // private reader = new FingerprintReader();
+  private reader = new FingerprintReader();
   users: any[] = [];
   currentPage: number = 1;
   itemsPerPage: number = 5; // Número de usuarios por página
@@ -87,29 +87,29 @@ export class UserComponent {
       showCancelButton: true,
     }).then((result) => {
       if (result.isConfirmed) {
-        // this.reader
-        //   .startAcquisition(SampleFormat.Intermediate)
-        //   .then(() => {
-        //     console.log('Esperando huella...');
-        //     this.reader.onSamplesAcquired = (event: SamplesAcquired) => {
-        //       const template = event.samples[0]; // puede ser más de una
-        //       console.log('Template de huella:', template);
+        this.reader
+          .startAcquisition(SampleFormat.Intermediate)
+          .then(() => {
+            console.log('Esperando huella...');
+            this.reader.onSamplesAcquired = (event: SamplesAcquired) => {
+              const template = event.samples[0]; // puede ser más de una
+              console.log('Template de huella:', template);
 
-        //       // Detener captura después de obtener la huella
-        //       this.reader.stopAcquisition();
+              // Detener captura después de obtener la huella
+              this.reader.stopAcquisition();
 
-        //       // Enviar template al backend o procesar
-        //       // this.enviarHuella(user, template);
-        //     };
-        //   })
-        //   .catch((err) => {
-        //     console.error('Error iniciando captura de huella:', err);
-        //     Swal.fire(
-        //       'Error',
-        //       'No se pudo iniciar la captura de huella',
-        //       'error'
-        //     );
-        //   });
+              // Enviar template al backend o procesar
+              // this.enviarHuella(user, template);
+            };
+          })
+          .catch((err) => {
+            console.error('Error iniciando captura de huella:', err);
+            Swal.fire(
+              'Error',
+              'No se pudo iniciar la captura de huella',
+              'error'
+            );
+          });
       }
     });
   }
