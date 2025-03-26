@@ -2,8 +2,6 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { UserComponent } from './user/user.component';
 import { TopNavBarComponent } from './Utils/top-nav-bar/top-nav-bar.component';
-import { FingerprintReader } from '@digitalpersona/devices';
-import './core/modules/WebSdk';
 
 declare global {
   interface Window {
