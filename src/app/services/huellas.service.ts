@@ -6,30 +6,33 @@ import Swal from 'sweetalert2';
 import { URL_DEV, USER_MAIL, USER_PASS } from '../Environments/Constants';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HuellasService {
-  
   private apiUrl = `${URL_DEV}/login`;
   private apiUrl2 = `${URL_DEV}/AdministracionUsuarios/GetAll?rol=EMBAJADOR&estado=1`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   login(): Observable<any> {
     const body = {
       email: USER_MAIL,
-      password: USER_PASS
+      password: USER_PASS,
     };
 
     return this.http.post<any>(this.apiUrl, body).pipe(
-      tap(response => {
+      tap((response) => {
         if (response?.token) {
           sessionStorage.setItem('token', response.token);
           Swal.fire('¡Éxito!', 'Inicio de sesión exitoso.', 'success');
         }
       }),
-      catchError(error => {
-        Swal.fire('Error', 'No se pudo iniciar sesión. Verifica tus credenciales.', 'error');
+      catchError((error) => {
+        Swal.fire(
+          'Error',
+          'No se pudo iniciar sesión. Verifica tus credenciales.',
+          'error'
+        );
         throw error;
       })
     );
@@ -55,15 +58,32 @@ export class HuellasService {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    return this.http.post<any>(`${URL_DEV}/AdministracionUsuarios/Create/${su_id}`, userData, { headers });
+    return this.http.post<any>(
+      `${URL_DEV}/AdministracionUsuarios/Create/${su_id}`,
+      userData,
+      { headers }
+    );
   }
 
-  createHuella(userHuella: any): Observable<any> {
+  createHuella(formData: any): Observable<any> {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    console.log(userHuella)
+    return this.http.post<any>(
+      `${URL_DEV}/HuellasPlanta/CreateRegister`,
+      formData,
+      { headers }
+    );
+  }
 
-    return this.http.post<any>(`${URL_DEV}/HuellasPlanta/CreateRegister`, userHuella, { headers });
+  authenticate(formData: any): Observable<any> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    return this.http.post<any>(
+      `${URL_DEV}/HuellasPlanta/Authenticate`,
+      formData,
+      { headers }
+    );
   }
 }

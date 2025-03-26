@@ -40,6 +40,8 @@ export class UserComponent {
     cargo_id: '',
   };
 
+  imagenHuella: string | null = null;
+
   constructor(private huellasService: HuellasService) {}
 
   ngOnInit(): void {
@@ -88,23 +90,20 @@ export class UserComponent {
     }).then((result) => {
       if (result.isConfirmed) {
         this.reader
-          .startAcquisition(SampleFormat.Intermediate)
+          .startAcquisition(SampleFormat.PngImage)
           .then(() => {
             console.log('Esperando huella...');
             this.reader.onSamplesAcquired = (event: SamplesAcquired) => {
-              const template = event.samples[0]; // puede ser más de una
-              console.log('Template de huella:', template);
+              const base64Image = event.samples[0];
+              const standardBase64 = this.convertUrlSafeBase64ToStandard(
+                base64Image.toString()
+              );
+              console.log('Template de huella:', standardBase64);
 
               // Detener captura después de obtener la huella
               this.reader.stopAcquisition();
-
-              let userHuella = {
-                usuario_id: user.id,
-                biometricTemplate: template.Data,
-              };
-
               // Enviar template al backend o procesar
-              this.enviarHuella(userHuella);
+              this.enviarHuella(user.id, standardBase64, 1);
             };
           })
           .catch((err) => {
@@ -199,10 +198,71 @@ export class UserComponent {
     });
   }
 
-  enviarHuella(userHuella: any) {
-    this.huellasService.createHuella(userHuella).subscribe({
-      next: (res) => console.log('Huella enviada:', res),
-      error: (err) => console.error('Error:', err),
-    });
+  enviarHuella(user_id: any, base64Image: any, opt: number): void {
+    const blob = this.base64ToBlob(base64Image);
+    const formData = new FormData();
+    formData.append('BiometricTemplate', blob, 'huella.png');
+
+    switch (opt) {
+      case 1:
+        formData.append('usuario_id', user_id);
+        this.huellasService.createHuella(formData).subscribe({
+          next: (res) => console.log('Huella registrada:', res),
+          error: (err) => console.error('Error al registrar huella:', err),
+        });
+        break;
+      case 2:
+        this.huellasService.authenticate(formData).subscribe({
+          next: (res) => console.log('Huella enviada:', res),
+          error: (err) => console.error('Error:', err),
+        });
+        break;
+      default:
+        break;
+    }
+  }
+
+  authenticate() {
+    this.reader
+      .startAcquisition(SampleFormat.PngImage)
+      .then(() => {
+        console.log('Esperando huella...');
+        this.reader.onSamplesAcquired = (event: SamplesAcquired) => {
+          const base64Image = event.samples[0]; // puede ser más de una
+          const standardBase64 = this.convertUrlSafeBase64ToStandard(base64Image.toString());
+          console.log('Template de huella:', standardBase64);
+
+          // Detener captura después de obtener la huella
+          this.reader.stopAcquisition();
+
+          // Enviar template al backend o procesar
+          this.enviarHuella(null, standardBase64, 2);
+        };
+      })
+      .catch((err) => {
+        console.error('Error iniciando captura de huella:', err);
+        Swal.fire('Error', 'No se pudo iniciar la captura de huella', 'error');
+      });
+  }
+  
+  convertUrlSafeBase64ToStandard(base64: string): string {
+    let standard = base64.replace(/-/g, '+').replace(/_/g, '/');
+    const padding = standard.length % 4;
+    if (padding !== 0) {
+      standard += '='.repeat(4 - padding);
+    }
+    return standard;
+  }
+
+  base64ToBlob(base64Image: string): Blob {
+    const byteString = atob(base64Image);
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+
+    return new Blob([ab], { type: 'image/png' });
   }
 }

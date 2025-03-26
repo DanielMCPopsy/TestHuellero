@@ -1,7 +1,9 @@
 <div class="container mt-4">
   <h2 class="text-center">Lista de Usuarios</h2>
-  
-  <button class="btn btn-success mb-3" (click)="openCreateUserModal()">Crear Usuario</button>
+
+  <button class="btn btn-success mb-3" (click)="openCreateUserModal()">
+    Crear Usuario
+  </button>
 
   <table class="table table-bordered table-striped mt-3">
     <thead class="table-dark">
@@ -20,8 +22,11 @@
         <td>{{ user.correo }}</td>
         <td>{{ user.cargo }}</td>
         <td>
-          <button class="btn btn-primary btn-sm" (click)="editUser(user)">
+          <button style="margin: 5%;" class="btn btn-primary btn-sm" (click)="editUser(user)">
             Añadir huella
+          </button>
+          <button style="margin: 5%;" class="btn btn-primary btn-sm" (click)="authenticate()">
+            Autenticarse
           </button>
         </td>
       </tr>
@@ -44,5 +49,10 @@
     >
       Siguiente
     </button>
+  </div>
+
+  <div *ngIf="imagenHuella" class="text-center mt-5">
+    <h4>Vista previa de huella escaneada</h4>
+    <img [src]="imagenHuella" alt="Huella escaneada" class="img-thumbnail" style="max-width: 300px; border: 2px solid #555;" />
   </div>
 </div>
