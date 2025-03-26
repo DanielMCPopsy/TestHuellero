@@ -57,4 +57,13 @@ export class HuellasService {
 
     return this.http.post<any>(`${URL_DEV}/AdministracionUsuarios/Create/${su_id}`, userData, { headers });
   }
+
+  createHuella(userHuella: any): Observable<any> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    console.log(userHuella)
+
+    return this.http.post<any>(`${URL_DEV}/HuellasPlanta/CreateRegister`, userHuella, { headers });
+  }
 }

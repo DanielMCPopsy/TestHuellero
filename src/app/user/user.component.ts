@@ -47,15 +47,15 @@ export class UserComponent {
   }
 
   loadUsers(): void {
-    this.huellasService.getUsers().subscribe(
-      (data) => {
+    this.huellasService.getUsers().subscribe({
+      next: (data) => {
         this.users = data;
       },
-      (error) => {
+      error: (error) => {
         Swal.fire('Error', 'Hubo un error', 'error');
         console.error('Error al obtener usuarios', error);
-      }
-    );
+      },
+    });
   }
 
   get paginatedUsers(): any[] {
@@ -98,8 +98,13 @@ export class UserComponent {
               // Detener captura después de obtener la huella
               this.reader.stopAcquisition();
 
+              let userHuella = {
+                usuario_id: user.id,
+                biometricTemplate: template.Data,
+              };
+
               // Enviar template al backend o procesar
-              // this.enviarHuella(user, template);
+              this.enviarHuella(userHuella);
             };
           })
           .catch((err) => {
@@ -117,16 +122,16 @@ export class UserComponent {
   createUser(userData: any): void {
     const su_id = '12345';
 
-    this.huellasService.createUser(su_id, userData).subscribe(
-      () => {
+    this.huellasService.createUser(su_id, userData).subscribe({
+      next: (res) => {
         Swal.fire('Éxito', 'Usuario creado correctamente', 'success');
         this.loadUsers();
       },
-      (error) => {
+      error: (err) => {
         Swal.fire('Error', 'No se pudo crear el usuario', 'error');
-        console.error('Error al crear usuario:', error);
-      }
-    );
+        console.error('Error al crear usuario:', err);
+      },
+    });
   }
 
   openCreateUserModal(): void {
@@ -191,6 +196,13 @@ export class UserComponent {
       if (result.isConfirmed) {
         this.createUser(result.value);
       }
+    });
+  }
+
+  enviarHuella(userHuella: any) {
+    this.huellasService.createHuella(userHuella).subscribe({
+      next: (res) => console.log('Huella enviada:', res),
+      error: (err) => console.error('Error:', err),
     });
   }
 }
